@@ -1,0 +1,222 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\luajit.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_load.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_alloc.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_api.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_asm.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_bc.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_bcread.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_bcwrite.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_buf.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_carith.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_ccall.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_ccallback.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_cconv.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_cdata.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_char.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_clib.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_cparse.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_crecord.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_ctype.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_debug.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_dispatch.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_err.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_ffrecord.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_func.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_gc.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_gdbjit.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_ir.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_lex.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_lib.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_mcode.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_meta.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_obj.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_opt_dce.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_opt_loop.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_opt_mem.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_opt_narrow.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_opt_sink.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_opt_split.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_parse.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_profile.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_record.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_snap.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_state.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_str.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_strfmt.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_strfmt_num.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_strscan.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_tab.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_trace.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_udata.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_vmevent.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_vmmath.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib_base.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib_bit.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib_debug.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib_ffi.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib_io.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib_jit.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib_math.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib_os.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib_package.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib_string.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib_table.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib_aux.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib_init.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lj_opt_fold.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="..\include\lj_vm.obj">
+      <Filter>源文件</Filter>
+    </Object>
+  </ItemGroup>
+</Project>

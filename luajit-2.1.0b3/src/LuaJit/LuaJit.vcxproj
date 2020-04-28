@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\lib_aux.c" />
+    <ClCompile Include="..\lib_base.c" />
+    <ClCompile Include="..\lib_bit.c" />
+    <ClCompile Include="..\lib_debug.c" />
+    <ClCompile Include="..\lib_ffi.c" />
+    <ClCompile Include="..\lib_init.c" />
+    <ClCompile Include="..\lib_io.c" />
+    <ClCompile Include="..\lib_jit.c" />
+    <ClCompile Include="..\lib_math.c" />
+    <ClCompile Include="..\lib_os.c" />
+    <ClCompile Include="..\lib_package.c" />
+    <ClCompile Include="..\lib_string.c" />
+    <ClCompile Include="..\lib_table.c" />
+    <ClCompile Include="..\lj_alloc.c" />
+    <ClCompile Include="..\lj_api.c" />
+    <ClCompile Include="..\lj_asm.c" />
+    <ClCompile Include="..\lj_bc.c" />
+    <ClCompile Include="..\lj_bcread.c" />
+    <ClCompile Include="..\lj_bcwrite.c" />
+    <ClCompile Include="..\lj_buf.c" />
+    <ClCompile Include="..\lj_carith.c" />
+    <ClCompile Include="..\lj_ccall.c" />
+    <ClCompile Include="..\lj_ccallback.c" />
+    <ClCompile Include="..\lj_cconv.c" />
+    <ClCompile Include="..\lj_cdata.c" />
+    <ClCompile Include="..\lj_char.c" />
+    <ClCompile Include="..\lj_clib.c" />
+    <ClCompile Include="..\lj_cparse.c" />
+    <ClCompile Include="..\lj_crecord.c" />
+    <ClCompile Include="..\lj_ctype.c" />
+    <ClCompile Include="..\lj_debug.c" />
+    <ClCompile Include="..\lj_dispatch.c" />
+    <ClCompile Include="..\lj_err.c" />
+    <ClCompile Include="..\lj_ffrecord.c" />
+    <ClCompile Include="..\lj_func.c" />
+    <ClCompile Include="..\lj_gc.c" />
+    <ClCompile Include="..\lj_gdbjit.c" />
+    <ClCompile Include="..\lj_ir.c" />
+    <ClCompile Include="..\lj_lex.c" />
+    <ClCompile Include="..\lj_lib.c" />
+    <ClCompile Include="..\lj_load.c" />
+    <ClCompile Include="..\lj_mcode.c" />
+    <ClCompile Include="..\lj_meta.c" />
+    <ClCompile Include="..\lj_obj.c" />
+    <ClCompile Include="..\lj_opt_dce.c" />
+    <ClCompile Include="..\lj_opt_fold.c" />
+    <ClCompile Include="..\lj_opt_loop.c" />
+    <ClCompile Include="..\lj_opt_mem.c" />
+    <ClCompile Include="..\lj_opt_narrow.c" />
+    <ClCompile Include="..\lj_opt_sink.c" />
+    <ClCompile Include="..\lj_opt_split.c" />
+    <ClCompile Include="..\lj_parse.c" />
+    <ClCompile Include="..\lj_profile.c" />
+    <ClCompile Include="..\lj_record.c" />
+    <ClCompile Include="..\lj_snap.c" />
+    <ClCompile Include="..\lj_state.c" />
+    <ClCompile Include="..\lj_str.c" />
+    <ClCompile Include="..\lj_strfmt.c" />
+    <ClCompile Include="..\lj_strfmt_num.c" />
+    <ClCompile Include="..\lj_strscan.c" />
+    <ClCompile Include="..\lj_tab.c" />
+    <ClCompile Include="..\lj_trace.c" />
+    <ClCompile Include="..\lj_udata.c" />
+    <ClCompile Include="..\lj_vmevent.c" />
+    <ClCompile Include="..\lj_vmmath.c" />
+    <ClCompile Include="..\luajit.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="..\include\lj_vm.obj" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{C2FB452D-81A9-4F89-9B56-85D05A82CF41}</ProjectGuid>
+    <RootNamespace>LuaJit</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>../include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DUSING_LUAJIT;DGC64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>../include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DUSING_LUAJIT;DGC64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
+  </ImportGroup>
+</Project>
