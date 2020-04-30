@@ -1,4 +1,4 @@
-|// Low-level VM code for x86 CPUsb.
+|// Low-level VM code for x86 CPUs.
 |// Bytecode interpreter, fast functions and helper functions.
 |// Copyright (C) 2005-2017 Mike Pall. See Copyright Notice in luajit.h
 |

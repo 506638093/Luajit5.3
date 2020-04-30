@@ -219,4 +219,9 @@
       <Filter>源文件</Filter>
     </Object>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="lua\Avatar.lua">
+      <Filter>源文件</Filter>
+    </None>
+  </ItemGroup>
 </Project>

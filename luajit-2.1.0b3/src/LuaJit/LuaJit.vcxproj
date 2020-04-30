@@ -89,6 +89,9 @@
   <ItemGroup>
     <Object Include="..\include\lj_vm.obj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="lua\Avatar.lua" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{C2FB452D-81A9-4F89-9B56-85D05A82CF41}</ProjectGuid>
@@ -150,7 +153,7 @@
       <ConformanceMode>true</ConformanceMode>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>../include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>DUSING_LUAJIT;DGC64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>LUAJIT_ENABLE_LUA53COMPAT;WIN32;_WINDOWS;CMAKE_INTDIR="Debug";JIT;FFI;P64;WIN;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -167,7 +170,7 @@
       <ConformanceMode>true</ConformanceMode>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>../include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>DUSING_LUAJIT;DGC64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>LUAJIT_ENABLE_LUA53COMPAT;WIN32;_WINDOWS;CMAKE_INTDIR="Debug";JIT;FFI;P64;WIN;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

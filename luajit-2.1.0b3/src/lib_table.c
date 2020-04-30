@@ -56,78 +56,83 @@ LJLIB_LUA(table_getn) /*
 
 LJLIB_CF(table_maxn)
 {
-  GCtab *t = lj_lib_checktab(L, 1);
-  TValue *array = tvref(t->array);
-  Node *node;
-  lua_Number m = 0;
-  ptrdiff_t i;
-  for (i = (ptrdiff_t)t->asize - 1; i >= 0; i--)
-    if (!tvisnil(&array[i])) {
-      m = (lua_Number)(int32_t)i;
-      break;
-    }
-  node = noderef(t->node);
-  for (i = (ptrdiff_t)t->hmask; i >= 0; i--)
-    if (!tvisnil(&node[i].val) && tvisnumber(&node[i].key)) {
-      lua_Number n = numberVnum(&node[i].key);
-      if (n > m) m = n;
-    }
-  setnumV(L->top-1, m);
-  return 1;
+	GCtab *t = lj_lib_checktab(L, 1);
+	TValue *array = tvref(t->array);
+	Node *node;
+	lua_Number m = 0;
+	ptrdiff_t i;
+	for (i = (ptrdiff_t)t->asize - 1; i >= 0; i--)
+		if (!tvisnil(&array[i])) {
+			m = (lua_Number)(int32_t)i;
+			break;
+		}
+	node = noderef(t->node);
+	for (i = (ptrdiff_t)t->hmask; i >= 0; i--)
+		if (!tvisnil(&node[i].val) && tvisnumber(&node[i].key)) {
+			lua_Number n = numberVnum(&node[i].key);
+			if (n > m) m = n;
+		}
+	setnumV(L->top - 1, m);
+	return 1;
 }
 
 LJLIB_CF(table_insert)		LJLIB_REC(.)
 {
-  GCtab *t = lj_lib_checktab(L, 1);
-  int32_t n, i = (int32_t)lj_tab_len(t) + 1;
-  int nargs = (int)((char *)L->top - (char *)L->base);
-  if (nargs != 2*sizeof(TValue)) {
-    if (nargs != 3*sizeof(TValue))
-      lj_err_caller(L, LJ_ERR_TABINS);
-    /* NOBARRIER: This just moves existing elements around. */
-    for (n = lj_lib_checkint(L, 2); i > n; i--) {
-      /* The set may invalidate the get pointer, so need to do it first! */
-      TValue *dst = lj_tab_setint(L, t, i);
-      cTValue *src = lj_tab_getint(t, i-1);
-      if (src) {
-	copyTV(L, dst, src);
-      } else {
-	setnilV(dst);
-      }
-    }
-    i = n;
-  }
-  {
-    TValue *dst = lj_tab_setint(L, t, i);
-    copyTV(L, dst, L->top-1);  /* Set new value. */
-    lj_gc_barriert(L, t, dst);
-  }
-  return 0;
+	GCtab *t = lj_lib_checktab(L, 1);
+	int32_t pos, e = (int32_t)lj_tab_len(t) + 1;
+	int nargs = (int)((char *)L->top - (char *)L->base);
+	if (nargs != 2 * sizeof(TValue)) {
+		if (nargs != 3 * sizeof(TValue))
+			lj_err_caller(L, LJ_ERR_TABINS);
+		/* NOBARRIER: This just moves existing elements around. */
+		for (pos = lj_lib_checkint(L, 2); e > pos; e--) {
+			/* The set may invalidate the get pointer, so need to do it first! */
+			TValue *dst = lj_tab_setint(L, t, e);
+			cTValue *src = lj_tab_getint(t, e - 1);
+			if (src) {
+				copyTV(L, dst, src);
+			}
+			else {
+				setnilV(dst);
+			}
+		}
+		e = pos;
+	}
+	{
+		TValue *dst = lj_tab_setint(L, t, e);
+		copyTV(L, dst, L->top - 1);  /* Set new value. */
+		lj_gc_barriert(L, t, dst);
+	}
+	return 0;
 }
 
-LJLIB_LUA(table_remove) /*
-  function(t, pos)
-    CHECK_tab(t)
-    local len = #t
-    if pos == nil then
-      if len ~= 0 then
-	local old = t[len]
-	t[len] = nil
-	return old
-      end
-    else
-      CHECK_int(pos)
-      if pos >= 1 and pos <= len then
-	local old = t[pos]
-	for i=pos+1,len do
-	  t[i-1] = t[i]
-	end
-	t[len] = nil
-	return old
-      end
-    end
-  end
-*/
+LJLIB_CF(table_remove) 		LJLIB_REC(.)
+{
+	GCtab *t = lj_lib_checktab(L, 1);
+	int32_t pos, e = (int32_t)lj_tab_len(t) + 1;
+	TValue *dst;
+	int nargs = (int)((char *)L->top - (char *)L->base);
+	if (nargs != 2 * sizeof(TValue)) {
+		lj_err_caller(L, LJ_ERR_TABRMOV);
+	}
+	else{
+		pos = lj_lib_checkint(L, 2);
+		if (pos > e || pos < 1) {
+			lj_err_caller(L, LJ_ERR_TABPOS);
+		}
+		for (; pos < e; pos++) {
+			/* The set may invalidate the get pointer, so need to do it first! */
+			cTValue *src = lj_tab_getint(t, pos + 1);
+			dst = lj_tab_setint(L, t, pos);
+			if (src) {
+				copyTV(L, dst, src);
+			}
+		}
+		dst = lj_tab_setint(L, t, e);
+		setnilV(dst);
+	}
+	return 0;
+}
 
 LJLIB_LUA(table_move) /*
   function(a1, f, e, t, a2)

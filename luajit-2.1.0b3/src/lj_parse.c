@@ -148,10 +148,12 @@ typedef struct FuncState {
 /* Binary and unary operators. ORDER OPR */
 typedef enum BinOpr {
 	OPR_ADD, OPR_SUB, OPR_MUL, OPR_DIV, OPR_MOD, OPR_POW,  /* ORDER ARITH */
+#ifdef LJ_53
 	/*huahua s*/
 	OPR_BAND, OPR_BOR, OPR_BXOR,
 	OPR_SHL, OPR_SHR,
 	/*huahua e*/
+#endif
 	OPR_CONCAT,
 	OPR_NE, OPR_EQ,
 	OPR_LT, OPR_GE, OPR_LE, OPR_GT,

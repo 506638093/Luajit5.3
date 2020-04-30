@@ -40,6 +40,12 @@ int _CRT_glob = 0;
 #include <errno.h>
 #include <time.h>
 
+/* key, in the registry, for table of loaded modules */
+#define LUA_LOADED_TABLE	"_LOADED"
+
+/* key, in the registry, for table of preloaded loaders */
+#define LUA_PRELOAD_TABLE	"_PRELOAD"
+
 typedef enum {
 	TM_INDEX,
 	TM_NEWINDEX,
@@ -6206,7 +6212,7 @@ static void luaI_openlib(lua_State*L, const char*libname,
 	const luaL_Reg*l, int nup) {
 	if (libname) {
 		int size = libsize(l);
-		luaL_findtable(L, (-10000), "_LOADED", 1);
+		luaL_findtable(L, (-10000), LUA_LOADED_TABLE, 1);
 		lua_getfield(L, -1, libname);
 		if (!lua_istable(L, -1)) {
 			lua_pop(L, 1);

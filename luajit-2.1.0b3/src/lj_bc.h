@@ -96,7 +96,7 @@
   _(MOV,	dst,	___,	var,	___) \
   _(NOT,	dst,	___,	var,	___) \
   _(UNM,	dst,	___,	var,	unm) \
-  _(BNOT,	dst,	___,	var,	___) \
+  _(BNOT,	dst,	___,	var,	bnot) \
   _(LEN,	dst,	___,	var,	len) \
   \
   /* Binary ops. ORDER OPR. VV last, POW must be next. */ \
@@ -119,11 +119,11 @@
   _(MODVV,	dst,	var,	var,	mod) \
   \
   _(POW,	dst,	var,	var,	pow) \
-  _(BBAND,	dst,	var,	var,	___) \
-  _(BBOR,	dst,	var,	var,	___) \
-  _(BBXOR,  dst,	var,	var,	___) \
-  _(BBSHL,  dst,	var,	var,	___) \
-  _(BBSHR,  dst,	var,	var,	___) \
+  _(BBAND,	dst,	var,	var,	band) \
+  _(BBOR,	dst,	var,	var,	bor) \
+  _(BBXOR,  dst,	var,	var,	xor) \
+  _(BBSHL,  dst,	var,	var,	shl) \
+  _(BBSHR,  dst,	var,	var,	shr) \
   _(CAT,	dst,	rbase,	rbase,	concat) \
   \
   /* Constant ops. */ \

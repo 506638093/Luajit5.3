@@ -1051,7 +1051,7 @@ static TRef rec_mm_arith(jit_State *J, RecordIndex *ix, MMS mm)
 	copyTV(J->L, basev + 1 + LJ_FR2, &ix->tabv);
 	copyTV(J->L, basev + 2 + LJ_FR2, &ix->keyv);
 	if (!lj_record_mm_lookup(J, ix, mm)) {  /* Lookup mm on 1st operand. */
-		if (mm != MM_unm) {
+		if (mm != MM_unm && mm != MM_bnot) {
 			ix->tab = ix->key;
 			copyTV(J->L, &ix->tabv, &ix->keyv);
 			if (lj_record_mm_lookup(J, ix, mm))  /* Lookup mm on 2nd operand. */
@@ -2310,6 +2310,7 @@ void lj_record_ins(jit_State *J)
 		else
 			rc = rec_mm_arith(J, &ix, MM_pow);
 		break;
+#ifdef LJ_53
 		/*huahua s*/
 	case BC_BBAND: case BC_BBOR: case BC_BBXOR:
 	case BC_BBSHL: case BC_BBSHR:
@@ -2330,6 +2331,7 @@ void lj_record_ins(jit_State *J)
 		}
 		break;
 		/*huahua e*/
+#endif
 
 		/* -- Miscellaneous ops ------------------------------------------------- */
 

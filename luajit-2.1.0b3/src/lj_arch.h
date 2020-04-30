@@ -568,4 +568,15 @@
 #define LJ_52			0
 #endif
 
+/*huahua s*/
+/* Compatibility with Lua 5.1 vs. 5.3. */
+#ifdef LUAJIT_ENABLE_LUA53COMPAT
+#undef LJ_52
+#define LJ_52			1
+#define LJ_53			1
+#pragma message("Compatibility lua 5.3")
+#else
+#define LJ_53			0
+#endif
+/*huahua e*/
 #endif

@@ -272,6 +272,39 @@ LJLIB_CF(ffi_meta___pow)	LJLIB_REC(cdata_arith MM_pow)
   return ffi_arith(L);
 }
 
+#ifdef LJ_53
+LJLIB_CF(ffi_meta___band)	LJLIB_REC(cdata_arith MM_band)
+{
+	return ffi_arith(L);
+}
+
+LJLIB_CF(ffi_meta___bor)	LJLIB_REC(cdata_arith MM_bor)
+{
+	return ffi_arith(L);
+}
+
+LJLIB_CF(ffi_meta___xor)	LJLIB_REC(cdata_arith MM_xor)
+{
+	return ffi_arith(L);
+}
+
+LJLIB_CF(ffi_meta___shl)	LJLIB_REC(cdata_arith MM_shl)
+{
+	return ffi_arith(L);
+}
+
+LJLIB_CF(ffi_meta___shr)	LJLIB_REC(cdata_arith MM_shr)
+{
+	return ffi_arith(L);
+}
+
+LJLIB_CF(ffi_meta___bnot)	LJLIB_REC(cdata_arith MM_bnot)
+{
+	return ffi_arith(L);
+}
+
+#endif
+
 LJLIB_CF(ffi_meta___unm)	LJLIB_REC(cdata_arith MM_unm)
 {
   return ffi_arith(L);
@@ -837,7 +870,7 @@ static GCtab *ffi_finalizer(lua_State *L)
 /* Register FFI module as loaded. */
 static void ffi_register_module(lua_State *L)
 {
-  cTValue *tmp = lj_tab_getstr(tabV(registry(L)), lj_str_newlit(L, "_LOADED"));
+  cTValue *tmp = lj_tab_getstr(tabV(registry(L)), lj_str_newlit(L, LUA_LOADED_TABLE));
   if (tmp && tvistab(tmp)) {
     GCtab *t = tabV(tmp);
     copyTV(L, lj_tab_setstr(L, t, lj_str_newlit(L, LUA_FFILIBNAME)), L->top-1);

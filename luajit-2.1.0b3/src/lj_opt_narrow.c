@@ -557,7 +557,9 @@ TRef lj_opt_narrow_bit_arith(jit_State *J, TRef rb, TRef rc,
 		tref_isinteger(rb) && tref_isinteger(rc) &&
 		numisint(lj_vm_foldarith(numberVnum(vb), numberVnum(vc),
 		(int)op - (int)IR_ADD)))
+	{
 		return emitir(IRTGI((int)op - (int)IR_ADD + (int)IR_ADDOV), rb, rc);
+	}
 	if (!tref_isnum(rb)) rb = emitir(IRTN(IR_CONV), rb, IRCONV_NUM_INT);
 	if (!tref_isnum(rc)) rc = emitir(IRTN(IR_CONV), rc, IRCONV_NUM_INT);
 	return emitir(IRTN(op), rb, rc);
@@ -582,7 +584,7 @@ TRef lj_opt_narrow_bnot(jit_State *J, TRef rc, TValue *vc)
 	rc = conv_str_tonum(J, rc, vc);
 	if (tref_isinteger(rc)) {
 		if ((uint32_t)numberVint(vc) != 0x80000000u)
-			return emitir(IRTGI((int)IR_BBNOT - (int)IR_ADD + (int)IR_ADDOV), lj_ir_kint(J, 0), rc);
+			return emitir(IRTN(IR_BBNOT), lj_ir_kint(J, 0), rc);
 		rc = emitir(IRTN(IR_BBNOT), rc, IRCONV_NUM_INT);
 	}
 	return emitir(IRTN(IR_BBNOT), rc, IRCONV_NUM_INT);

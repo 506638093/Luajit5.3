@@ -28,7 +28,7 @@
 static GCtab *lib_create_table(lua_State *L, const char *libname, int hsize)
 {
   if (libname) {
-    luaL_findtable(L, LUA_REGISTRYINDEX, "_LOADED", 16);
+    luaL_findtable(L, LUA_REGISTRYINDEX, LUA_LOADED_TABLE, 16);
     lua_getfield(L, -1, libname);
     if (!tvistab(L->top-1)) {
       L->top--;
@@ -161,7 +161,7 @@ GCfunc *lj_lib_pushcc(lua_State *L, lua_CFunction f, int id, int n)
 
 void lj_lib_prereg(lua_State *L, const char *name, lua_CFunction f, GCtab *env)
 {
-  luaL_findtable(L, LUA_REGISTRYINDEX, "_PRELOAD", 4);
+  luaL_findtable(L, LUA_REGISTRYINDEX, LUA_PRELOAD_TABLE, 4);
   lua_pushcfunction(L, f);
   /* NOBARRIER: The function is new (marked white). */
   setgcref(funcV(L->top-1)->c.env, obj2gco(env));

@@ -137,7 +137,7 @@ static void print_jit_status(lua_State *L)
 {
 	int n;
 	const char *s;
-	lua_getfield(L, LUA_REGISTRYINDEX, "_LOADED");
+	lua_getfield(L, LUA_REGISTRYINDEX, LUA_LOADED_TABLE);
 	lua_getfield(L, -1, "jit");  /* Get jit.* module table. */
 	lua_remove(L, -2);
 	lua_getfield(L, -1, "status");
@@ -346,7 +346,7 @@ static int dojitcmd(lua_State *L, const char *cmd)
 {
 	const char *opt = strchr(cmd, '=');
 	lua_pushlstring(L, cmd, opt ? (size_t)(opt - cmd) : strlen(cmd));
-	lua_getfield(L, LUA_REGISTRYINDEX, "_LOADED");
+	lua_getfield(L, LUA_REGISTRYINDEX, LUA_LOADED_TABLE);
 	lua_getfield(L, -1, "jit");  /* Get jit.* module table. */
 	lua_remove(L, -2);
 	lua_pushvalue(L, -2);
@@ -366,7 +366,7 @@ static int dojitcmd(lua_State *L, const char *cmd)
 /* Optimization flags. */
 static int dojitopt(lua_State *L, const char *opt)
 {
-	lua_getfield(L, LUA_REGISTRYINDEX, "_LOADED");
+	lua_getfield(L, LUA_REGISTRYINDEX, LUA_LOADED_TABLE);
 	lua_getfield(L, -1, "jit.opt");  /* Get jit.opt.* module table. */
 	lua_remove(L, -2);
 	lua_getfield(L, -1, "start");
@@ -581,8 +581,8 @@ int main(int argc, char **argv)
 	}
 	smain.argc = argc;
 	smain.argv = argv;
+	dostring(L, "package.path = 'E:/XCore1.0/XluaBuild/luajit-2.1.0b3/src/LuaJit/lua;E:/XCore1.0/XluaBuild/luajit-2.1.0b3/src/LuaJit/lua/LuaScripts/?.bytes';'E:/XCore1.0/XluaBuild/luajit-2.1.0b3/src/LuaJit/lua/Configs/?.bytes';E:/XCore1.0/XluaBuild/luajit-2.1.0b3/src/LuaJit/lua/ProtoBuffs/?.bytes'", "init");
 	status = lua_cpcall(L, pmain, NULL);
-	//dostring(L, "local t = 33;local i1 = 3<<33; local i2 = 3<<t; print(i1);print(i2);", "");
 	report(L, status);
 	lua_close(L);
 

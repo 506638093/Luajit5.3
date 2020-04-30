@@ -113,10 +113,11 @@ static int libsize(const luaL_Reg *l)
 
 LUALIB_API void luaL_pushmodule(lua_State *L, const char *modname, int sizehint)
 {
-  luaL_findtable(L, LUA_REGISTRYINDEX, "_LOADED", 16);
+  luaL_findtable(L, LUA_REGISTRYINDEX, LUA_LOADED_TABLE, 16);
   lua_getfield(L, -1, modname);
-  if (!lua_istable(L, -1)) {
-    lua_pop(L, 1);
+  if (!lua_istable(L, -1)) {	/* no LOADED[modname]? */
+    lua_pop(L, 1);	 /* remove previous result */
+	/* try global variable (and create one if it does not exist) */
     if (luaL_findtable(L, LUA_GLOBALSINDEX, modname, sizehint) != NULL)
       lj_err_callerv(L, LJ_ERR_BADMODN, modname);
     lua_pushvalue(L, -1);

@@ -23,7 +23,7 @@
 #include "lj_bcdump.h"
 #include "lj_parse.h"
 
-/* -- Load Lua source code and bytecode ----------------------------------- */
+/* -- Load Lua source code and bytecode ---cpparser-------------------------------- */
 
 static TValue *cpparser(lua_State *L, lua_CFunction dummy, void *ud)
 {

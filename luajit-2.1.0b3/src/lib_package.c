@@ -405,11 +405,13 @@ static int lj_cf_package_require(lua_State *L)
   const char *name = luaL_checkstring(L, 1);
   int i;
   lua_settop(L, 1);  /* _LOADED table will be at index 2 */
-  lua_getfield(L, LUA_REGISTRYINDEX, "_LOADED");
+  lua_getfield(L, LUA_REGISTRYINDEX, LUA_LOADED_TABLE);
   lua_getfield(L, 2, name);
   if (lua_toboolean(L, -1)) {  /* is it there? */
+#ifndef LJ_53
     if (lua_touserdata(L, -1) == sentinel)  /* check loops */
       luaL_error(L, "loop or previous error loading module " LUA_QS, name);
+#endif
     return 1;  /* package is already loaded */
   }
   /* else must load it; iterate over available loaders */
@@ -431,12 +433,18 @@ static int lj_cf_package_require(lua_State *L)
     else
       lua_pop(L, 1);
   }
-  lua_pushlightuserdata(L, sentinel);
-  lua_setfield(L, 2, name);  /* _LOADED[name] = sentinel */
+
   lua_pushstring(L, name);  /* pass name as argument to module */
   lua_call(L, 1, 1);  /* run loaded module */
   if (!lua_isnil(L, -1))  /* non-nil return? */
-    lua_setfield(L, 2, name);  /* _LOADED[name] = returned value */
+  {
+	  lua_setfield(L, 2, name);  /* _LOADED[name] = returned value */
+  }
+  else
+  {
+	  lua_pushlightuserdata(L, sentinel);
+	  lua_setfield(L, 2, name);  /* _LOADED[name] = sentinel */
+  }
   lua_getfield(L, 2, name);
   if (lua_touserdata(L, -1) == sentinel) {   /* module did not set a value? */
     lua_pushboolean(L, 1);  /* use true as result */
@@ -589,9 +597,9 @@ LUALIB_API int luaopen_package(lua_State *L)
   setpath(L, "cpath", LUA_CPATH, LUA_CPATH_DEFAULT, noenv);
   lua_pushliteral(L, LUA_PATH_CONFIG);
   lua_setfield(L, -2, "config");
-  luaL_findtable(L, LUA_REGISTRYINDEX, "_LOADED", 16);
+  luaL_findtable(L, LUA_REGISTRYINDEX, LUA_LOADED_TABLE, 16);
   lua_setfield(L, -2, "loaded");
-  luaL_findtable(L, LUA_REGISTRYINDEX, "_PRELOAD", 4);
+  luaL_findtable(L, LUA_REGISTRYINDEX, LUA_PRELOAD_TABLE, 4);
   lua_setfield(L, -2, "preload");
   lua_pushvalue(L, LUA_GLOBALSINDEX);
   luaL_register(L, NULL, package_global);

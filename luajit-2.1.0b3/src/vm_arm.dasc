@@ -2940,7 +2940,7 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |  .long 0x00000000, 0x41e00000	// 2^31.
     break;
   case BC_LEN:
-    |  // RA = dst*8, RC = srcb
+    |  // RA = dst*8, RC = src
     |  lsl RC, RC, #3
     |  ldrd CARG12, [BASE, RC]
     |  checkstr CARG2, >2

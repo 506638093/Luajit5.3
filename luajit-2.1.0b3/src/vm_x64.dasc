@@ -3331,6 +3331,7 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |  ins_next
     break;
   case BC_BNOT:
+    break;
   case BC_BBAND:
   case BC_BBOR:
   case BC_BBXOR:
