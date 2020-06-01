@@ -49,10 +49,11 @@ double lj_vm_foldarith(double x, double y, int op)
   case IR_ABS - IR_ADD: return fabs(x); break;
 	  /*huahua s*/
   case IR_BBAND - IR_ADD: return (double)((int64_t)x & (int64_t)y); break;
-  case IR_BBOR - IR_ADD: return (double)((int64_t)x | (int64_t)y); break;
+  case IR_BBOR  - IR_ADD: return (double)((int64_t)x | (int64_t)y); break;
   case IR_BBXOR - IR_ADD: return (double)((int64_t)x ^ (int64_t)y); break;
   case IR_BBSHL - IR_ADD: return (double)((int64_t)x << (int64_t)y); break;
   case IR_BBSHR - IR_ADD: return (double)((int64_t)x >> (int64_t)y); break;
+  case IR_BBNOT - IR_ADD: return (double)(~(int64_t)x); break;
 	  /*huahua e*/
 
 #if LJ_HASJIT

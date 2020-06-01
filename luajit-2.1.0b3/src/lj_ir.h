@@ -78,7 +78,7 @@
   _(BBSHL,	N , ref, ref) \
   _(BBSHR,	N , ref, ref) \
   _(NEG,	N , ref, ref) \
-  _(BBNOT,	N , ref, ___) \
+  _(BBNOT,	N , ref, ref) \
   \
   _(ABS,	N , ref, ref) \
   _(ATAN2,	N , ref, ref) \

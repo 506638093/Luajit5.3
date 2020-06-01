@@ -1654,7 +1654,7 @@ static void asm_ir(ASMState *as, IRIns *ir)
   case IR_NEG: asm_neg(as, ir); break;
 	  /*huahua s*/
   case IR_BBAND: asm_band(as, ir); break;
-  case IR_BBOR: asm_bor(as, ir); break;
+  case IR_BBOR:  asm_bor(as, ir);  break;
   case IR_BBXOR: asm_bxor(as, ir); break;
   case IR_BBSHL: asm_bshl(as, ir); break;
   case IR_BBSHR: asm_bshr(as, ir); break;
@@ -2003,254 +2003,256 @@ static void asm_tail_link(ASMState *as)
 /* Clear reg/sp for all instructions and add register hints. */
 static void asm_setup_regsp(ASMState *as)
 {
-  GCtrace *T = as->T;
-  int sink = T->sinktags;
-  IRRef nins = T->nins;
-  IRIns *ir, *lastir;
-  int inloop;
+	GCtrace *T = as->T;
+	int sink = T->sinktags;
+	IRRef nins = T->nins;
+	IRIns *ir, *lastir;
+	int inloop;
 #if LJ_TARGET_ARM
-  uint32_t rload = 0xa6402a64;
+	uint32_t rload = 0xa6402a64;
 #endif
 
-  ra_setup(as);
+	ra_setup(as);
 
-  /* Clear reg/sp for constants. */
-  for (ir = IR(T->nk), lastir = IR(REF_BASE); ir < lastir; ir++) {
-    ir->prev = REGSP_INIT;
-    if (irt_is64(ir->t) && ir->o != IR_KNULL) {
+	/* Clear reg/sp for constants. */
+	for (ir = IR(T->nk), lastir = IR(REF_BASE); ir < lastir; ir++) {
+		ir->prev = REGSP_INIT;
+		if (irt_is64(ir->t) && ir->o != IR_KNULL) {
 #if LJ_GC64
-      ir->i = 0;  /* Will become non-zero only for RIP-relative addresses. */
+			ir->i = 0;  /* Will become non-zero only for RIP-relative addresses. */
 #else
-      /* Make life easier for backends by putting address of constant in i. */
-      ir->i = (int32_t)(intptr_t)(ir+1);
+			/* Make life easier for backends by putting address of constant in i. */
+			ir->i = (int32_t)(intptr_t)(ir + 1);
 #endif
-      ir++;
-    }
-  }
-
-  /* REF_BASE is used for implicit references to the BASE register. */
-  lastir->prev = REGSP_HINT(RID_BASE);
-
-  as->snaprename = nins;
-  as->snapref = nins;
-  as->snapno = T->nsnap;
-
-  as->stopins = REF_BASE;
-  as->orignins = nins;
-  as->curins = nins;
-
-  /* Setup register hints for parent link instructions. */
-  ir = IR(REF_FIRST);
-  if (as->parent) {
-    uint16_t *p;
-    lastir = lj_snap_regspmap(as->parent, as->J->exitno, ir);
-    if (lastir - ir > LJ_MAX_JSLOTS)
-      lj_trace_err(as->J, LJ_TRERR_NYICOAL);
-    as->stopins = (IRRef)((lastir-1) - as->ir);
-    for (p = as->parentmap; ir < lastir; ir++) {
-      RegSP rs = ir->prev;
-      *p++ = (uint16_t)rs;  /* Copy original parent RegSP to parentmap. */
-      if (!ra_hasspill(regsp_spill(rs)))
-	ir->prev = (uint16_t)REGSP_HINT(regsp_reg(rs));
-      else
-	ir->prev = REGSP_INIT;
-    }
-  }
-
-  inloop = 0;
-  as->evenspill = SPS_FIRST;
-  for (lastir = IR(nins); ir < lastir; ir++) {
-    if (sink) {
-      if (ir->r == RID_SINK)
-	continue;
-      if (ir->r == RID_SUNK) {  /* Revert after ASM restart. */
-	ir->r = RID_SINK;
-	continue;
-      }
-    }
-    switch (ir->o) {
-    case IR_LOOP:
-      inloop = 1;
-      break;
-#if LJ_TARGET_ARM
-    case IR_SLOAD:
-      if (!((ir->op2 & IRSLOAD_TYPECHECK) || (ir+1)->o == IR_HIOP))
-	break;
-      /* fallthrough */
-    case IR_ALOAD: case IR_HLOAD: case IR_ULOAD: case IR_VLOAD:
-      if (!LJ_SOFTFP && irt_isnum(ir->t)) break;
-      ir->prev = (uint16_t)REGSP_HINT((rload & 15));
-      rload = lj_ror(rload, 4);
-      continue;
-#endif
-    case IR_CALLXS: {
-      CCallInfo ci;
-      ci.flags = asm_callx_flags(as, ir);
-      ir->prev = asm_setup_call_slots(as, ir, &ci);
-      if (inloop)
-	as->modset |= RSET_SCRATCH;
-      continue;
-      }
-    case IR_CALLN: case IR_CALLA: case IR_CALLL: case IR_CALLS: {
-      const CCallInfo *ci = &lj_ir_callinfo[ir->op2];
-      ir->prev = asm_setup_call_slots(as, ir, ci);
-      if (inloop)
-	as->modset |= (ci->flags & CCI_NOFPRCLOBBER) ?
-		      (RSET_SCRATCH & ~RSET_FPR) : RSET_SCRATCH;
-      continue;
-      }
-#if LJ_SOFTFP || (LJ_32 && LJ_HASFFI)
-    case IR_HIOP:
-      switch ((ir-1)->o) {
-#if LJ_SOFTFP && LJ_TARGET_ARM
-      case IR_SLOAD: case IR_ALOAD: case IR_HLOAD: case IR_ULOAD: case IR_VLOAD:
-	if (ra_hashint((ir-1)->r)) {
-	  ir->prev = (ir-1)->prev + 1;
-	  continue;
+			ir++;
+		}
 	}
-	break;
+
+	/* REF_BASE is used for implicit references to the BASE register. */
+	lastir->prev = REGSP_HINT(RID_BASE);
+
+	as->snaprename = nins;
+	as->snapref = nins;
+	as->snapno = T->nsnap;
+
+	as->stopins = REF_BASE;
+	as->orignins = nins;
+	as->curins = nins;
+
+	/* Setup register hints for parent link instructions. */
+	ir = IR(REF_FIRST);
+	if (as->parent) {
+		uint16_t *p;
+		lastir = lj_snap_regspmap(as->parent, as->J->exitno, ir);
+		if (lastir - ir > LJ_MAX_JSLOTS)
+			lj_trace_err(as->J, LJ_TRERR_NYICOAL);
+		as->stopins = (IRRef)((lastir - 1) - as->ir);
+		for (p = as->parentmap; ir < lastir; ir++) {
+			RegSP rs = ir->prev;
+			*p++ = (uint16_t)rs;  /* Copy original parent RegSP to parentmap. */
+			if (!ra_hasspill(regsp_spill(rs)))
+				ir->prev = (uint16_t)REGSP_HINT(regsp_reg(rs));
+			else
+				ir->prev = REGSP_INIT;
+		}
+	}
+
+	inloop = 0;
+	as->evenspill = SPS_FIRST;
+	for (lastir = IR(nins); ir < lastir; ir++) {
+		if (sink) {
+			if (ir->r == RID_SINK)
+				continue;
+			if (ir->r == RID_SUNK) {  /* Revert after ASM restart. */
+				ir->r = RID_SINK;
+				continue;
+			}
+		}
+		switch (ir->o) 
+		{
+		case IR_LOOP:
+			inloop = 1;
+			break;
+#if LJ_TARGET_ARM
+		case IR_SLOAD:
+			if (!((ir->op2 & IRSLOAD_TYPECHECK) || (ir + 1)->o == IR_HIOP))
+				break;
+			/* fallthrough */
+		case IR_ALOAD: case IR_HLOAD: case IR_ULOAD: case IR_VLOAD:
+			if (!LJ_SOFTFP && irt_isnum(ir->t)) break;
+			ir->prev = (uint16_t)REGSP_HINT((rload & 15));
+			rload = lj_ror(rload, 4);
+			continue;
+#endif
+		case IR_CALLXS: {
+			CCallInfo ci;
+			ci.flags = asm_callx_flags(as, ir);
+			ir->prev = asm_setup_call_slots(as, ir, &ci);
+			if (inloop)
+				as->modset |= RSET_SCRATCH;
+			continue;
+		}
+		case IR_CALLN: case IR_CALLA: case IR_CALLL: case IR_CALLS: {
+			const CCallInfo *ci = &lj_ir_callinfo[ir->op2];
+			ir->prev = asm_setup_call_slots(as, ir, ci);
+			if (inloop)
+				as->modset |= (ci->flags & CCI_NOFPRCLOBBER) ?
+				(RSET_SCRATCH & ~RSET_FPR) : RSET_SCRATCH;
+			continue;
+		}
+#if LJ_SOFTFP || (LJ_32 && LJ_HASFFI)
+		case IR_HIOP:
+			switch ((ir - 1)->o) {
+#if LJ_SOFTFP && LJ_TARGET_ARM
+			case IR_SLOAD: case IR_ALOAD: case IR_HLOAD: case IR_ULOAD: case IR_VLOAD:
+				if (ra_hashint((ir - 1)->r)) {
+					ir->prev = (ir - 1)->prev + 1;
+					continue;
+				}
+				break;
 #endif
 #if !LJ_SOFTFP && LJ_NEED_FP64
-      case IR_CONV:
-	if (irt_isfp((ir-1)->t)) {
-	  ir->prev = REGSP_HINT(RID_FPRET);
-	  continue;
-	}
-	/* fallthrough */
+			case IR_CONV:
+				if (irt_isfp((ir - 1)->t)) {
+					ir->prev = REGSP_HINT(RID_FPRET);
+					continue;
+				}
+				/* fallthrough */
 #endif
-      case IR_CALLN: case IR_CALLXS:
+			case IR_CALLN: case IR_CALLXS:
 #if LJ_SOFTFP
-      case IR_MIN: case IR_MAX:
+			case IR_MIN: case IR_MAX:
 #endif
-	(ir-1)->prev = REGSP_HINT(RID_RETLO);
-	ir->prev = REGSP_HINT(RID_RETHI);
-	continue;
-      default:
-	break;
-      }
-      break;
+				(ir - 1)->prev = REGSP_HINT(RID_RETLO);
+				ir->prev = REGSP_HINT(RID_RETHI);
+				continue;
+			default:
+				break;
+			}
+			break;
 #endif
 #if LJ_SOFTFP
-    case IR_MIN: case IR_MAX:
-      if ((ir+1)->o != IR_HIOP) break;
-      /* fallthrough */
+		case IR_MIN: case IR_MAX:
+			if ((ir + 1)->o != IR_HIOP) break;
+			/* fallthrough */
 #endif
-    /* C calls evict all scratch regs and return results in RID_RET. */
-    case IR_SNEW: case IR_XSNEW: case IR_NEWREF: case IR_BUFPUT:
-      if (REGARG_NUMGPR < 3 && as->evenspill < 3)
-	as->evenspill = 3;  /* lj_str_new and lj_tab_newkey need 3 args. */
+	/* C calls evict all scratch regs and return results in RID_RET. */
+		case IR_SNEW: case IR_XSNEW: case IR_NEWREF: case IR_BUFPUT:
+			if (REGARG_NUMGPR < 3 && as->evenspill < 3)
+				as->evenspill = 3;  /* lj_str_new and lj_tab_newkey need 3 args. */
 #if LJ_TARGET_X86 && LJ_HASFFI
-      if (0) {
-    case IR_CNEW:
-	if (ir->op2 != REF_NIL && as->evenspill < 4)
-	  as->evenspill = 4;  /* lj_cdata_newv needs 4 args. */
-      }
+			if (0) {
+		case IR_CNEW:
+			if (ir->op2 != REF_NIL && as->evenspill < 4)
+				as->evenspill = 4;  /* lj_cdata_newv needs 4 args. */
+			}
 #else
-    case IR_CNEW:
+		case IR_CNEW:
 #endif
-    case IR_TNEW: case IR_TDUP: case IR_CNEWI: case IR_TOSTR:
-    case IR_BUFSTR:
-      ir->prev = REGSP_HINT(RID_RET);
-      if (inloop)
-	as->modset = RSET_SCRATCH;
-      continue;
-    case IR_STRTO: case IR_OBAR:
-      if (inloop)
-	as->modset = RSET_SCRATCH;
-      break;
+		case IR_TNEW: case IR_TDUP: case IR_CNEWI: case IR_TOSTR:
+		case IR_BUFSTR:
+			ir->prev = REGSP_HINT(RID_RET);
+			if (inloop)
+				as->modset = RSET_SCRATCH;
+			continue;
+		case IR_STRTO: case IR_OBAR:
+			if (inloop)
+				as->modset = RSET_SCRATCH;
+			break;
 #if !LJ_SOFTFP
-    case IR_ATAN2:
+		case IR_ATAN2:
 #if LJ_TARGET_X86
-      if (as->evenspill < 4)  /* Leave room to call atan2(). */
-	as->evenspill = 4;
+			if (as->evenspill < 4)  /* Leave room to call atan2(). */
+				as->evenspill = 4;
 #endif
 #if !LJ_TARGET_X86ORX64
-    case IR_LDEXP:
+		case IR_LDEXP:
 #endif
 #endif
-    case IR_POW:
-      if (!LJ_SOFTFP && irt_isnum(ir->t)) {
-	if (inloop)
-	  as->modset |= RSET_SCRATCH;
+		case IR_POW:
+			if (!LJ_SOFTFP && irt_isnum(ir->t)) {
+				if (inloop)
+					as->modset |= RSET_SCRATCH;
 #if LJ_TARGET_X86
-	break;
+				break;
 #else
-	ir->prev = REGSP_HINT(RID_FPRET);
-	continue;
+				ir->prev = REGSP_HINT(RID_FPRET);
+				continue;
 #endif
-      }
-      /* fallthrough for integer POW */
-    case IR_DIV: case IR_MOD:
-      if (!irt_isnum(ir->t)) {
-	ir->prev = REGSP_HINT(RID_RET);
-	if (inloop)
-	  as->modset |= (RSET_SCRATCH & RSET_GPR);
-	continue;
-      }
-      break;
-    case IR_FPMATH:
+			}
+			/* fallthrough for integer POW */
+		case IR_DIV: case IR_MOD:
+			if (!irt_isnum(ir->t)) {
+				ir->prev = REGSP_HINT(RID_RET);
+				if (inloop)
+					as->modset |= (RSET_SCRATCH & RSET_GPR);
+				continue;
+			}
+			break;
+		case IR_FPMATH:
 #if LJ_TARGET_X86ORX64
-      if (ir->op2 <= IRFPM_TRUNC) {
-	if (!(as->flags & JIT_F_SSE4_1)) {
-	  ir->prev = REGSP_HINT(RID_XMM0);
-	  if (inloop)
-	    as->modset |= RSET_RANGE(RID_XMM0, RID_XMM3+1)|RID2RSET(RID_EAX);
-	  continue;
-	}
-	break;
-      } else if (ir->op2 == IRFPM_EXP2 && !LJ_64) {
-	if (as->evenspill < 4)  /* Leave room to call pow(). */
-	  as->evenspill = 4;
-      }
+			if (ir->op2 <= IRFPM_TRUNC) {
+				if (!(as->flags & JIT_F_SSE4_1)) {
+					ir->prev = REGSP_HINT(RID_XMM0);
+					if (inloop)
+						as->modset |= RSET_RANGE(RID_XMM0, RID_XMM3 + 1) | RID2RSET(RID_EAX);
+					continue;
+				}
+				break;
+			}
+			else if (ir->op2 == IRFPM_EXP2 && !LJ_64) {
+				if (as->evenspill < 4)  /* Leave room to call pow(). */
+					as->evenspill = 4;
+			}
 #endif
-      if (inloop)
-	as->modset |= RSET_SCRATCH;
+			if (inloop)
+				as->modset |= RSET_SCRATCH;
 #if LJ_TARGET_X86
-      break;
+			break;
 #else
-      ir->prev = REGSP_HINT(RID_FPRET);
-      continue;
+			ir->prev = REGSP_HINT(RID_FPRET);
+			continue;
 #endif
 #if LJ_TARGET_X86ORX64
-    /* Non-constant shift counts need to be in RID_ECX on x86/x64. */
-    case IR_BSHL: case IR_BSHR: case IR_BSAR:
-      if ((as->flags & JIT_F_BMI2))  /* Except if BMI2 is available. */
-	break;
-    case IR_BROL: case IR_BROR:
-      if (!irref_isk(ir->op2) && !ra_hashint(IR(ir->op2)->r)) {
-	IR(ir->op2)->r = REGSP_HINT(RID_ECX);
-	if (inloop)
-	  rset_set(as->modset, RID_ECX);
-      }
-      break;
+			/* Non-constant shift counts need to be in RID_ECX on x86/x64. */
+		case IR_BSHL: case IR_BSHR: case IR_BSAR:
+			if ((as->flags & JIT_F_BMI2))  /* Except if BMI2 is available. */
+				break;
+		case IR_BROL: case IR_BROR:
+			if (!irref_isk(ir->op2) && !ra_hashint(IR(ir->op2)->r)) {
+				IR(ir->op2)->r = REGSP_HINT(RID_ECX);
+				if (inloop)
+					rset_set(as->modset, RID_ECX);
+			}
+			break;
 #endif
-    /* Do not propagate hints across type conversions or loads. */
-    case IR_TOBIT:
-    case IR_XLOAD:
+			/* Do not propagate hints across type conversions or loads. */
+		case IR_TOBIT:
+		case IR_XLOAD:
 #if !LJ_TARGET_ARM
-    case IR_ALOAD: case IR_HLOAD: case IR_ULOAD: case IR_VLOAD:
+		case IR_ALOAD: case IR_HLOAD: case IR_ULOAD: case IR_VLOAD:
 #endif
-      break;
-    case IR_CONV:
-      if (irt_isfp(ir->t) || (ir->op2 & IRCONV_SRCMASK) == IRT_NUM ||
-	  (ir->op2 & IRCONV_SRCMASK) == IRT_FLOAT)
-	break;
-      /* fallthrough */
-    default:
-      /* Propagate hints across likely 'op reg, imm' or 'op reg'. */
-      if (irref_isk(ir->op2) && !irref_isk(ir->op1) &&
-	  ra_hashint(regsp_reg(IR(ir->op1)->prev))) {
-	ir->prev = IR(ir->op1)->prev;
-	continue;
-      }
-      break;
-    }
-    ir->prev = REGSP_INIT;
-  }
-  if ((as->evenspill & 1))
-    as->oddspill = as->evenspill++;
-  else
-    as->oddspill = 0;
+			break;
+		case IR_CONV:
+			if (irt_isfp(ir->t) || (ir->op2 & IRCONV_SRCMASK) == IRT_NUM ||
+				(ir->op2 & IRCONV_SRCMASK) == IRT_FLOAT)
+				break;
+			/* fallthrough */
+		default:
+			/* Propagate hints across likely 'op reg, imm' or 'op reg'. */
+			if (irref_isk(ir->op2) && !irref_isk(ir->op1) &&
+				ra_hashint(regsp_reg(IR(ir->op1)->prev))) {
+				ir->prev = IR(ir->op1)->prev;
+				continue;
+			}
+			break;
+		}
+		ir->prev = REGSP_INIT;
+	}
+	if ((as->evenspill & 1))
+		as->oddspill = as->evenspill++;
+	else
+		as->oddspill = 0;
 }
 
 /* -- Assembler core ------------------------------------------------------ */

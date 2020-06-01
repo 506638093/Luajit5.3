@@ -173,6 +173,11 @@ LJFOLD(ADD KNUM KNUM)
 LJFOLD(SUB KNUM KNUM)
 LJFOLD(MUL KNUM KNUM)
 LJFOLD(DIV KNUM KNUM)
+LJFOLD(BBAND KNUM KNUM)
+LJFOLD(BBOR KNUM KNUM)
+LJFOLD(BBXOR KNUM KNUM)
+LJFOLD(BBSHL KNUM KNUM)
+LJFOLD(BBSHR KNUM KNUM)
 LJFOLD(ATAN2 KNUM KNUM)
 LJFOLD(LDEXP KNUM KNUM)
 LJFOLD(MIN KNUM KNUM)
@@ -187,6 +192,8 @@ LJFOLDF(kfold_numarith)
 
 LJFOLD(NEG KNUM FLOAD)
 LJFOLD(ABS KNUM FLOAD)
+LJFOLD(BNOT KNUM FLOAD)
+LJFOLD(BBNOT KNUM FLOAD)
 LJFOLDF(kfold_numabsneg)
 {
   lua_Number a = knumleft;
@@ -256,8 +263,19 @@ static int32_t kfold_intop(int32_t k1, int32_t k2, IROp op)
   case IR_BSAR: k1 >>= (k2 & 31); break;
   case IR_BROL: k1 = (int32_t)lj_rol((uint32_t)k1, (k2 & 31)); break;
   case IR_BROR: k1 = (int32_t)lj_ror((uint32_t)k1, (k2 & 31)); break;
+#ifdef LJ_53
+	  /*huahua s*/
+  case IR_BBAND: k1 &= k2; break;
+  case IR_BBOR: k1 |= k2; break;
+  case IR_BBXOR: k1 ^= k2; break;
+  case IR_BBSHL: k1 <<= (k2 & 31); break;
+  case IR_BBSHR: k1 = (int32_t)((uint32_t)k1 >> (k2 & 31)); break;
+  case IR_BBNOT: k1 = ~k1; break;
+#endif
+	  /*huahua e*/
   case IR_MIN: k1 = k1 < k2 ? k1 : k2; break;
   case IR_MAX: k1 = k1 > k2 ? k1 : k2; break;
+  
   default: lua_assert(0); break;
   }
   return k1;
@@ -276,6 +294,11 @@ LJFOLD(BSHR KINT KINT)
 LJFOLD(BSAR KINT KINT)
 LJFOLD(BROL KINT KINT)
 LJFOLD(BROR KINT KINT)
+LJFOLD(BBAND KINT KINT)
+LJFOLD(BBOR KINT KINT)
+LJFOLD(BBXOR KINT KINT)
+LJFOLD(BBSHL KINT KINT)
+LJFOLD(BBSHR KINT KINT)
 LJFOLD(MIN KINT KINT)
 LJFOLD(MAX KINT KINT)
 LJFOLDF(kfold_intarith)
@@ -297,6 +320,7 @@ LJFOLDF(kfold_intovarith)
 }
 
 LJFOLD(BNOT KINT)
+LJFOLD(BBNOT KINT)
 LJFOLDF(kfold_bnot)
 {
   return INTFOLD(~fleft->i);
@@ -359,6 +383,14 @@ static uint64_t kfold_int64arith(uint64_t k1, uint64_t k2, IROp op)
   case IR_BSAR: k1 >>= (k2 & 63); break;
   case IR_BROL: k1 = (int32_t)lj_rol((uint32_t)k1, (k2 & 63)); break;
   case IR_BROR: k1 = (int32_t)lj_ror((uint32_t)k1, (k2 & 63)); break;
+#ifdef LJ_53
+  case IR_BBAND:k1 &= k2; break;
+  case IR_BBOR: k1 |= k2; break;
+  case IR_BBXOR:k1 ^= k2; break;
+  case IR_BBSHL:k1 <<= (k2 & 63); break;
+  case IR_BBSHR:k1 = ((uint64_t)k1 >> (k2 & 63)); break;
+  case IR_BBNOT:k1 = ~k1; break;
+#endif
 #endif
   default: UNUSED(k2); lua_assert(0); break;
   }
@@ -371,6 +403,12 @@ LJFOLD(MUL KINT64 KINT64)
 LJFOLD(BAND KINT64 KINT64)
 LJFOLD(BOR KINT64 KINT64)
 LJFOLD(BXOR KINT64 KINT64)
+LJFOLD(BBAND KINT64 KINT64)
+LJFOLD(BBOR KINT64 KINT64)
+LJFOLD(BBXOR KINT64 KINT64)
+LJFOLD(BBSHL KINT64 KINT64)
+LJFOLD(BBSHR KINT64 KINT64)
+LJFOLD(BBNOT KINT64 KINT64)
 LJFOLDF(kfold_int64arith)
 {
   return INT64FOLD(kfold_int64arith(ir_k64(fleft)->u64,
@@ -404,6 +442,11 @@ LJFOLD(BSHR KINT64 KINT)
 LJFOLD(BSAR KINT64 KINT)
 LJFOLD(BROL KINT64 KINT)
 LJFOLD(BROR KINT64 KINT)
+LJFOLD(BBAND KINT64 KINT)
+LJFOLD(BBOR KINT64 KINT)
+LJFOLD(BBXOR KINT64 KINT)
+LJFOLD(BBSHL KINT64 KINT)
+LJFOLD(BBSHR KINT64 KINT)
 LJFOLDF(kfold_int64shift)
 {
 #if LJ_HASFFI
@@ -416,6 +459,7 @@ LJFOLDF(kfold_int64shift)
 }
 
 LJFOLD(BNOT KINT64)
+LJFOLD(BBNOT KINT64)
 LJFOLDF(kfold_bnot64)
 {
 #if LJ_HASFFI
@@ -941,6 +985,7 @@ LJFOLDF(shortcut_dropleft)
 LJFOLD(NEG NEG any)
 LJFOLD(BNOT BNOT)
 LJFOLD(BSWAP BSWAP)
+LJFOLD(BBNOT BBNOT)
 LJFOLDF(shortcut_leftleft)
 {
   PHIBARRIER(fleft);  /* See above. Fold would be ok, but not beneficial. */
@@ -1542,6 +1587,19 @@ LJFOLDF(simplify_band_k)
   return NEXTFOLD;
 }
 
+LJFOLD(BBAND any KINT)
+LJFOLD(BBAND any KINT64)
+LJFOLDF(simplify_bband_k)
+{
+	int64_t k = fright->o == IR_KINT ? (int64_t)fright->i :
+		(int64_t)ir_k64(fright)->u64;
+	if (k == 0)  /* i & 0 ==> 0 */
+		return RIGHTFOLD;
+	if (k == -1)  /* i & -1 ==> i */
+		return LEFTFOLD;
+	return NEXTFOLD;
+}
+
 LJFOLD(BOR any KINT)
 LJFOLD(BOR any KINT64)
 LJFOLDF(simplify_bor_k)
@@ -1553,6 +1611,19 @@ LJFOLDF(simplify_bor_k)
   if (k == -1)  /* i | -1 ==> -1 */
     return RIGHTFOLD;
   return NEXTFOLD;
+}
+
+LJFOLD(BBOR any KINT)
+LJFOLD(BBOR any KINT64)
+LJFOLDF(simplify_bbor_k)
+{
+	int64_t k = fright->o == IR_KINT ? (int64_t)fright->i :
+		(int64_t)ir_k64(fright)->u64;
+	if (k == 0)  /* i | 0 ==> i */
+		return LEFTFOLD;
+	if (k == -1)  /* i | -1 ==> -1 */
+		return RIGHTFOLD;
+	return NEXTFOLD;
 }
 
 LJFOLD(BXOR any KINT)
@@ -1571,11 +1642,29 @@ LJFOLDF(simplify_bxor_k)
   return NEXTFOLD;
 }
 
+LJFOLD(BBXOR any KINT)
+LJFOLD(BBXOR any KINT64)
+LJFOLDF(simplify_bbxor_k)
+{
+	int64_t k = fright->o == IR_KINT ? (int64_t)fright->i :
+		(int64_t)ir_k64(fright)->u64;
+	if (k == 0)  /* i xor 0 ==> i */
+		return LEFTFOLD;
+	if (k == -1) {  /* i xor -1 ==> ~i */
+		fins->o = IR_BBNOT;
+		fins->op2 = 0;
+		return RETRYFOLD;
+	}
+	return NEXTFOLD;
+}
+
 LJFOLD(BSHL any KINT)
 LJFOLD(BSHR any KINT)
 LJFOLD(BSAR any KINT)
 LJFOLD(BROL any KINT)
 LJFOLD(BROR any KINT)
+LJFOLD(BBSHL any KINT)
+LJFOLD(BBSHR any KINT)
 LJFOLDF(simplify_shift_ik)
 {
   int32_t mask = irt_is64(fins->t) ? 63 : 31;
@@ -1586,6 +1675,11 @@ LJFOLDF(simplify_shift_ik)
     fins->o = IR_ADD;
     fins->op2 = fins->op1;
     return RETRYFOLD;
+  }
+  if (k == 1 && fins->o == IR_BBSHL) {  /* i << 1 ==> i + i */
+	  fins->o = IR_ADD;
+	  fins->op2 = fins->op1;
+	  return RETRYFOLD;
   }
   if (k != fright->i) {  /* i o k ==> i o (k & mask) */
     fins->op2 = (IRRef1)lj_ir_kint(J, k);
@@ -1600,6 +1694,7 @@ LJFOLDF(simplify_shift_ik)
 #endif
   return NEXTFOLD;
 }
+
 
 LJFOLD(BSHL any BAND)
 LJFOLD(BSHR any BAND)

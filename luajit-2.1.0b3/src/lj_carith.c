@@ -363,6 +363,12 @@ uint64_t lj_carith_shift64(uint64_t x, int32_t sh, int op)
 	case IR_BSAR - IR_BSHL: x = lj_carith_sar64(x, sh); break;
 	case IR_BROL - IR_BSHL: x = lj_carith_rol64(x, sh); break;
 	case IR_BROR - IR_BSHL: x = lj_carith_ror64(x, sh); break;
+	case IR_BBAND - IR_BSHL:x &= sh; break;
+	case IR_BBOR - IR_BSHL: x |= sh; break;
+	case IR_BBXOR - IR_BSHL:x ^= sh; break;
+	case IR_BBSHL - IR_BSHL:x <<= (sh & 63); break;
+	case IR_BBSHR - IR_BSHL:x = ((uint64_t)x >> (sh & 63)); break;
+	case IR_BBNOT - IR_BSHL:x = ~x; break;
 	default: lua_assert(0); break;
 	}
 	return x;

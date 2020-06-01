@@ -2315,8 +2315,7 @@ void lj_record_ins(jit_State *J)
 	case BC_BBAND: case BC_BBOR: case BC_BBXOR:
 	case BC_BBSHL: case BC_BBSHR:
 		if (tref_isnumber_str(rb) && tref_isnumber_str(rc))
-			rc = lj_opt_narrow_bit_arith(J, rb, rc, rbv, rcv,
-			(int)bcmode_mm(op) - (int)MM_band + (int)IR_BBAND);
+			rc = lj_opt_narrow_bit_arith(J, rb, rc, rbv, rcv, (int)bcmode_mm(op) - (int)MM_band + (int)IR_BBAND);
 		else
 			rc = rec_mm_arith(J, &ix, bcmode_mm(op));
 		break;
